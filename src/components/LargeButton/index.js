@@ -24,8 +24,7 @@ const styles = StyleSheet.create({
 
     text: {
         color: 'black',
-        fontWeight: 'bold',
         fontSize: 20,
-        fontFamily: fonts.primary
+        fontFamily: fonts.secondary
     }
 })
