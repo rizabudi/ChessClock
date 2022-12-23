@@ -6,14 +6,12 @@ import { fonts } from '../../utils'
 // TEST onPress USING FUNCTIONAL COMPONENT
 const Settings = ({ navigation }) => {
 
-  const [minute, setMinute] = useState(0)
-
-  const Submit = () => {
-    setMinute(parseInt(minute))
+  const Submit = (minute,increment) => {
     navigation.navigate({
       name: 'Home',
       params: {
-        duration: (minute * 60) 
+        duration: (minute * 60),
+        increment: (increment) 
       },
       merge: true
     })
@@ -25,27 +23,27 @@ const Settings = ({ navigation }) => {
       <View style={styles.timerItem}>
         <Text style={styles.text}>Bullet</Text>
         <View style={styles.timerOptions}>
-          <SmallButton text="1 min" minute={10} onPress={Submit}/>
-          <SmallButton text="1 | 1" />
-          <SmallButton text="2 | 1" />
+          <SmallButton text="1 min" onPress={() => Submit(1,0)}/>
+          <SmallButton text="1 | 1" onPress={() => Submit(1,1)} />
+          <SmallButton text="2 | 1" onPress={() => Submit(2,1)} />
         </View>
       </View>
 
       <View style={styles.timerItem}>
         <Text style={styles.text}>Blitz</Text>
         <View style={styles.timerOptions}>
-          <SmallButton text="3 min" />
-          <SmallButton text="3 | 2" />
-          <SmallButton text="5 min" />
+          <SmallButton text="3 min" onPress={() => Submit(3)} />
+          <SmallButton text="3 | 2" onPress={() => Submit(3,2)} />
+          <SmallButton text="5 min" onPress={() => Submit(5)} />
         </View>
       </View>
 
       <View style={styles.timerItem}>
         <Text style={styles.text}>Rapid</Text>
         <View style={styles.timerOptions}>
-          <SmallButton text="10 min" />
-          <SmallButton text="15 | 10" />
-          <SmallButton text="30 min" />
+          <SmallButton text="10 min" onPress={() => Submit(10,0)} />
+          <SmallButton text="15 | 10" onPress={() => Submit(15,10)} />
+          <SmallButton text="30 min" onPress={() => Submit(30,0)} />
         </View>
       </View>
 

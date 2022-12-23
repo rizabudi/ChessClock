@@ -33,12 +33,6 @@ const Home = ({ navigation, route }) => {
         //console.log('BELL sound loaded successfully')
     })
 
-    // useEffect(() => {
-    //     if (route.params?.duration) {
-    //         console.log('params passed successfully')
-    //     }
-    // }, [route.params?.duration])
-
     const [isWhiteTurn, setIsWhiteTurn] = useState(false)
     const [isBlackTurn, setIsBlackTurn] = useState(false)
 
@@ -54,11 +48,57 @@ const Home = ({ navigation, route }) => {
     const [blackTextColor, setBlackTextColor] = useState('black')
 
     const initialDuration = 300
-    //const increment = () => route.params?.incSecond ? route.params.incSecond : 0
+    const [duration, setDuration] = useState(0)
+    const [duration1, setDuration1] = useState(0)
+    const [duration2, setDuration2] = useState(0)
+    const [until1, setUntil1] = useState(initialDuration)
+    const [until2, setUntil2] = useState(initialDuration)
+    const [id1, setId1] = useState(undefined)
+    const [id2, setId2] = useState(undefined)
+    const [increment, setIncrement] = useState(0)
 
-    //const fixedDuration = () => route.params?.duration ? route.params.duration : initialDuration
+    useEffect(() => {
+        console.log("duration: " + route.params?.duration)
+        if (route.params?.duration) {
+            setDuration(route.params.duration)
+            setDuration1(route.params.duration)
+            setDuration2(route.params.duration)
+            setUntil1(route.params.duration)
+            setUntil2(route.params.duration)
+
+            setIsWhiteTurn(false)
+            setIsBlackTurn(false)
+            setIsPause(false)
+
+            setBlackBackgroundColor("#D9D9D9")
+            setWhiteBackgroundColor("#D9D9D9")
+            setWhiteDigitColor("#D9D9D9")
+            setBlackDigitColor("#D9D9D9")
+            setWhiteTextColor("black")
+            setBlackTextColor("black")
+        } else {
+            setDuration(initialDuration)
+            setDuration1(initialDuration)
+            setDuration2(initialDuration)
+            setUntil1(initialDuration)
+            setUntil2(initialDuration)
+        }
+    }, [route.params?.duration])
     
-    //const [duration, setDuration] = useState(route.params?.duration ? route.params.duration : initialDuration)
+    useEffect(() => {
+        console.log("increment: " + route.params?.increment)
+        if (route.params?.duration) {
+            setIncrement(route.params.increment)
+        }
+    }, [route.params?.increment])
+
+    useEffect(() => {
+        setId1("A"+new Date().getTime().toString())
+    }, [duration1])
+
+    useEffect(() => {
+        setId2("B"+new Date().getTime().toString())
+    }, [duration2])
 
     const whitePressed = () => {
         setIsWhiteTurn(false)
@@ -70,8 +110,9 @@ const Home = ({ navigation, route }) => {
         setWhiteTextColor('black')
         setBlackTextColor('white')
         setIsPause(false)
-        // setDuration(duration + increment)
-        // console.log(duration + increment + " " + typeof duration + " " + typeof increment)
+        if(increment > 0) {
+            setDuration2(until2 + increment)
+        }
         tick.play()
         console.log('white turn:', isWhiteTurn, 'black turn:', isBlackTurn)
     }
@@ -86,6 +127,9 @@ const Home = ({ navigation, route }) => {
         setBlackTextColor('black')
         setWhiteTextColor('white')
         setIsPause(false)
+        if(increment > 0) {
+            setDuration1(until1 + increment)
+        }
         tick.play()
         console.log('white turn:', isWhiteTurn, 'black turn:', isBlackTurn)
     }
@@ -132,8 +176,27 @@ const Home = ({ navigation, route }) => {
         setIsWhiteTurn(false)
         setIsBlackTurn(false)
         setIsPause(false)
-        //setDuration(initialDuration)
-        console.log('reset pressed', initialDuration, typeof initialDuration)
+        if(duration == duration1) {
+            setId1("A"+new Date().getTime().toString())
+        } else {
+            setDuration1(duration)
+        }
+        if(duration == duration2) {
+            setId2("B"+new Date().getTime().toString())
+        } else {
+            setDuration2(duration)
+        }
+        setUntil1(duration)
+        setUntil2(duration)
+
+        setBlackBackgroundColor("#D9D9D9")
+        setWhiteBackgroundColor("#D9D9D9")
+        setWhiteDigitColor("#D9D9D9")
+        setBlackDigitColor("#D9D9D9")
+        setWhiteTextColor("black")
+        setBlackTextColor("black")
+
+        console.log('reset pressed', duration, typeof duration)
     }
 
   return (
@@ -141,7 +204,8 @@ const Home = ({ navigation, route }) => {
         <KeepAwake />
         <TouchableOpacity >
             <CountDown
-                size={77}
+                id={id1}
+                size={duration < 3600 ? 77 : 55}
                 style={{
                     backgroundColor: `${blackBackgroundColor}`,
                     width: '100%',
@@ -151,7 +215,7 @@ const Home = ({ navigation, route }) => {
                     borderTopRightRadius: 12,
                     transform: [{ rotate: '180deg'}]
                 }}
-                until={route.params?.duration ? route.params.duration : initialDuration}
+                until={duration1}
                 onFinish={() => {
                     alert('White wins!')
                     bell.play()
@@ -167,12 +231,16 @@ const Home = ({ navigation, route }) => {
                 separatorStyle={{
                     color: `${blackTextColor}`,
                 }}
-                timeToShow={['M', 'S']}
+                timeToShow={duration < 3600 ? ['M', 'S'] : ['H','M', 'S']}
                 timeLabels={{
                     m: null, s: null
                 }}
                 showSeparator
                 onPress={blackPressed}
+                onChange={(until) => {
+                    console.log("until1 :" + until)
+                    setUntil1(until-1)
+                }}
                 running={isBlackTurn === false ? false : !isWhiteTurn}
             />
         </TouchableOpacity>
@@ -195,7 +263,8 @@ const Home = ({ navigation, route }) => {
 
         <TouchableOpacity >
             <CountDown
-                size={77}
+                id={id2}  
+                size={duration < 3600 ? 77 : 55}
                 style={{
                     backgroundColor: `${whiteBackgroundColor}`,
                     width: '100%',
@@ -204,7 +273,7 @@ const Home = ({ navigation, route }) => {
                     borderTopLeftRadius: 12,
                     borderTopRightRadius: 12
                 }}
-                until={route.params?.duration ? route.params.duration : initialDuration}
+                until={duration2}
                 onFinish={() => {
                     alert('Black wins!')
                     bell.play()
@@ -220,13 +289,17 @@ const Home = ({ navigation, route }) => {
                 separatorStyle={{
                     color: `${whiteTextColor}`,
                 }}
-                timeToShow={['M', 'S']}
+                timeToShow={duration < 3600 ? ['M', 'S'] : ['H','M', 'S']}
                 timeLabels={{
                     m: null,
                     s: null
                 }}
                 showSeparator
                 onPress={whitePressed}
+                onChange={(until) => {
+                    console.log("until2 :" + until)
+                    setUntil2(until-1)
+                }}
                 running={isWhiteTurn === false ? false : !isBlackTurn}
             />
         </TouchableOpacity>
