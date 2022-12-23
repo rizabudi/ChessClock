@@ -2,12 +2,14 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { Component, useState } from 'react'
 import { fonts } from '../../utils'
 
-const SmallButton = ({text, onPress}) => {
+const SmallButton = ({text, onPress, minute, increment}) => {
 
   return (
     <TouchableOpacity
       style={styles.button}
       onPress={onPress}
+      minute={minute}
+      increment={increment}
       >
       <Text style={styles.text}>{text}</Text>
     </TouchableOpacity>

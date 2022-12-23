@@ -2,36 +2,32 @@ import { StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useState } from 'react'
 import { LargeButton } from '../../components'
 import { fonts } from '../../utils'
+import * as yup from 'yup'
 
 const Custom = ({ navigation }) => {
 
-  const TimersSchema = yup.object().shape({
-    whiteHoursTimer: yup.number().integer().min(0,"Number too small").max(11,"Number too big").typeError("Provide a positive number, less than 11"),
-    whiteMinutesTimer: yup.number().integer().min(0,"Number too small").max(59,"Number too big").typeError("Provide a positive number, less than 60"),
-    whiteSecondsTimer: yup.number().integer().min(0,"Number too small").max(59,"Number too big").typeError("Provide a positive number, less than 60"),
-    blackHoursTimer: yup.number().integer().min(0,"Number too small").max(11,"Number too big").typeError("Provide a positive number, less than 11"),
-    blackMinutesTimer: yup.number().integer().min(0,"Number too small").max(59,"Number too big").typeError("Provide a positive number, less than 60"),
-    blackSecondsTimer: yup.number().integer().min(0,"Number too small").max(59,"Number too big").typeError("Provide a positive number, less than 60"),
-  })
+  // const TimersSchema = yup.object().shape({
+  //   whiteHoursTimer: yup.number().integer().min(0,"Number too small").max(11,"Number too big").typeError("Provide a positive number, less than 11"),
+  //   whiteMinutesTimer: yup.number().integer().min(0,"Number too small").max(59,"Number too big").typeError("Provide a positive number, less than 60"),
+  //   blackHoursTimer: yup.number().integer().min(0,"Number too small").max(11,"Number too big").typeError("Provide a positive number, less than 11"),
+  //   blackMinutesTimer: yup.number().integer().min(0,"Number too small").max(59,"Number too big").typeError("Provide a positive number, less than 60"),
+  // })
 
   const [hour, setHour] = useState(0)
   const [minute, setMinute] = useState(0)
-  const [second, setSecond] = useState(0)
 
-  const [incMinute, setIncMinute] = useState(0)
   const [incSecond, setIncSecond] = useState(0)
 
-  const submit = () => {
-    const dataTimer = {
-      hour,
-      minute,
-      second
-    }
-
-    const dataIncrements = {
-      incMinute,
-      incSecond
-    }
+  const Submit = () => {
+    navigation.navigate({
+      name: 'Home',
+      params: {
+        duration: (hour * 3600) + (minute * 60),
+        increment: incSecond
+      },
+      //merge: true
+    })
+    console.log('Succeed. Hour: ' + hour + ' Minute: ' + minute + ' Increment: ' + incSecond +typeof hour + typeof minute + typeof incSecond)
   }
 
   return (
@@ -41,25 +37,51 @@ const Custom = ({ navigation }) => {
       <View style={styles.timer}>
         <Text style={styles.smallerTitle}>Time</Text>
         <View style={styles.timerContainer}>
-          <TextInput style={styles.input} value={hour} keyboardType='numeric' maxLength={2} placeholder={'00'}></TextInput>
+          <View style={styles.timerItem}>
+            <TextInput
+              style={styles.input}
+              value={hour}
+              onChangeText={(val) => setHour(parseInt(val))}
+              keyboardType='numeric'
+              maxLength={2}
+              placeholder={'00'}>
+            </TextInput>
+            <Text style={styles.label}>hour(s)</Text>
+          </View>
           <Text style={styles.separator}>:</Text>
-          <TextInput style={styles.input} value={minute} keyboardType='numeric' maxLength={2} placeholder={'00'}></TextInput>
-          <Text style={styles.separator}>:</Text>
-          <TextInput style={styles.input} value={second} keyboardType='numeric' maxLength={2} placeholder={'00'}></TextInput>
+          <View style={styles.timerItem}>
+            <TextInput
+              style={styles.input}
+              value={minute}
+              onChangeText={(val) => setMinute(parseInt(val))}
+              keyboardType='numeric'
+              maxLength={2}
+              placeholder={'00'}>
+            </TextInput>
+            <Text style={styles.label}>minute(s)</Text>
+          </View>
         </View>
       </View>
 
       <View style={styles.timer}>
         <Text style={styles.smallerTitle}>Increments</Text>
         <View style={styles.incrementsContainer}>
-          <TextInput style={styles.input} value={incMinute} keyboardType='numeric' maxLength={2} placeholder={'00'}></TextInput>
-          <Text style={styles.separator}>:</Text>
-          <TextInput style={styles.input} value={incSecond} keyboardType='numeric' maxLength={2} placeholder={'00'}></TextInput>
+          <View style={styles.timerItem}>
+            <TextInput
+              style={styles.input}
+              value={incSecond}
+              onChangeText={(val) => setIncSecond(parseInt(val))}
+              keyboardType='numeric'
+              maxLength={2}
+              placeholder={'00'}>
+            </TextInput>
+            <Text style={styles.label}>second(s)</Text>
+          </View>
         </View>
       </View>
 
       <View style={styles.navigationButton}>
-        <LargeButton text="Done" onPress={() => navigation.navigate('Home')}/>
+        <LargeButton text="Done" onPress={Submit} />
       </View>
     </View>
   )
@@ -72,13 +94,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#472D2D',
     padding: 14,
-    alignItems: 'center'
+    alignItems: 'center',
   },
 
   title: {
     fontFamily: fonts.primary,
     fontSize: 28,
     marginBottom: 52,
+    marginTop: 61-14,
     color: 'white'
   },
 
@@ -115,7 +138,7 @@ const styles = StyleSheet.create({
   timerContainer: {
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
   },
 
   incrementsContainer: {
@@ -127,5 +150,11 @@ const styles = StyleSheet.create({
   separator: {
     fontFamily: fonts.secondary,
     fontSize: 50,
+  },
+
+  label: {
+    fontFamily: fonts.primary,
+    marginTop: 9,
+    textAlign: 'center'
   }
 })

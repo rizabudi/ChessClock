@@ -1,44 +1,58 @@
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import { SmallButton, LargeButton, Gap } from '../../components/'
 import { fonts } from '../../utils'
 
 // TEST onPress USING FUNCTIONAL COMPONENT
 const Settings = ({ navigation }) => {
 
+  const [minute, setMinute] = useState(0)
+
+  const Submit = () => {
+    setMinute(parseInt(minute))
+    navigation.navigate({
+      name: 'Home',
+      params: {
+        duration: (minute * 60) 
+      },
+      merge: true
+    })
+    console.log('Succeed. Minute: ' + minute + ' ' + typeof minute)
+  }
+
   return (
     <View style={styles.page}>
       <View style={styles.timerItem}>
         <Text style={styles.text}>Bullet</Text>
         <View style={styles.timerOptions}>
-          <SmallButton text="1 min" onPress={() => navigation.navigate('Home', { size: 60 })}/>
-          <SmallButton text="1 | 1"/>
-          <SmallButton text="2 | 1"/>
+          <SmallButton text="1 min" minute={10} onPress={Submit}/>
+          <SmallButton text="1 | 1" />
+          <SmallButton text="2 | 1" />
         </View>
       </View>
 
       <View style={styles.timerItem}>
         <Text style={styles.text}>Blitz</Text>
         <View style={styles.timerOptions}>
-          <SmallButton text="3 min"/>
-          <SmallButton text="3 | 2"/>
-          <SmallButton text="5 min"/>
+          <SmallButton text="3 min" />
+          <SmallButton text="3 | 2" />
+          <SmallButton text="5 min" />
         </View>
       </View>
 
       <View style={styles.timerItem}>
         <Text style={styles.text}>Rapid</Text>
         <View style={styles.timerOptions}>
-          <SmallButton text="10 min"/>
-          <SmallButton text="15 | 10"/>
-          <SmallButton text="30 min"/>
+          <SmallButton text="10 min" />
+          <SmallButton text="15 | 10" />
+          <SmallButton text="30 min" />
         </View>
       </View>
 
       <View style={styles.navigationButton}>
         <LargeButton text="Custom" onPress={() => navigation.navigate('Custom')}/>
-        <Gap height={14}/>
-        <LargeButton text="Done" onPress={() => navigation.navigate('Home')}/>
+        {/* <Gap height={14}/>
+        <LargeButton text="Done" onPress={() => navigation.navigate('Home')}/> */}
       </View>
     </View>
   )
