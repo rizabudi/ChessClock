@@ -51,8 +51,8 @@ const Home = ({ navigation, route }) => {
     const [duration, setDuration] = useState(0)
     const [duration1, setDuration1] = useState(0)
     const [duration2, setDuration2] = useState(0)
-    const [until1, setUntil1] = useState(initialDuration)
-    const [until2, setUntil2] = useState(initialDuration)
+    const [until1, setUntil1] = useState(0)
+    const [until2, setUntil2] = useState(0)
     const [id1, setId1] = useState(undefined)
     const [id2, setId2] = useState(undefined)
     const [increment, setIncrement] = useState(0)
@@ -87,7 +87,7 @@ const Home = ({ navigation, route }) => {
     
     useEffect(() => {
         console.log("increment: " + route.params?.increment)
-        if (route.params?.duration) {
+        if (route.params?.increment) {
             setIncrement(route.params.increment)
         }
     }, [route.params?.increment])
